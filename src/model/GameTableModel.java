@@ -14,12 +14,19 @@ public class GameTableModel extends AbstractTableModel {
     private void generateBoard() {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                if(y == 0 || y == size - 1 || x == 0 || x == size - 1) {
-                    board[y][x] = '#'; // Wall
-                } else if (Math.random() < 0.15){
-                    board[y][x] = '#'; // Random wall
-                } else {
-                    board[y][x] = '.'; // Empty space
+                board[y][x] = '.'; // Empty cell
+            }
+        }
+        for (int i = 0; i < size; i++) {
+            board[0][i] = '#'; // Top wall
+            board[size - 1][i] = '#'; // Bottom wall
+            board[i][0] = '#'; // Left wall
+            board[i][size - 1] = '#'; // Right wall
+        }
+        for (int y = 2; y < size - 1; y++) {
+            for (int x = 0; x < size - 1; x++) {
+                if(Math.random() < 0.15) {
+                    board[y][x] = '#'; // Random walls
                 }
             }
         }

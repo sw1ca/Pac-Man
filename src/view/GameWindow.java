@@ -13,7 +13,6 @@ public class GameWindow extends JFrame {
     public GameWindow(int size) {
         this.boardSize = size;
         setTitle("Chase & Chew - Board Size: " + size + "x" + size);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
 
