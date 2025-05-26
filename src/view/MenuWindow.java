@@ -22,7 +22,7 @@ public class MenuWindow extends JFrame {
 
         JLabel label = new JLabel("Chase & Chew");
         label.setBounds(360, 95, 300, 20);
-        label.setForeground(Color.WHITE);
+        label.setForeground(Color.YELLOW);
 
         newGameButton = new JButton("New Game");
         newGameButton.setBounds(150, 200, 500, 50);

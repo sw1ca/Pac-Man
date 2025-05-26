@@ -7,24 +7,26 @@ import java.util.List;
 
 public class GameTableModel extends AbstractTableModel {
     private GameCell[][] board;
-    private int size;
+    private int width;
+    private int height;
 
-    public void generateMaze(int size) {
-        this.size = size;
-        board = new GameCell[size][size];
+    public void generateMaze(int width, int height) {
+        this.width = width;
+        this.height = height;
+        board = new GameCell[height][width];
 
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 board[i][j] = new GameCell();
                 board[i][j].setWall(true);
             }
         }
 
-        generateMazeDFS(1, 1, new boolean[size][size]);
+        generateMazeDFS(1, 1, new boolean[height][width]);
 
         // Add dot
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 if (!board[i][j].isWall()) {
                     board[i][j].setDot(true);
                 }
@@ -37,8 +39,11 @@ public class GameTableModel extends AbstractTableModel {
     }
 
     private void generateMazeDFS(int x, int y, boolean[][] visited) {
-        visited[x][y] = true;
-        board[x][y].setWall(false);
+        if(x <= 0 || y <= 0 || x >= width - 1 || y >= height - 1) {
+            return; // Out of bounds
+        }
+        visited[y][x] = true;
+        board[y][x].setWall(false);
 
         List<int[]> directions = Arrays.asList(new int[]{0, 2}, new int[]{0, -2}, new int[]{2, 0}, new int[]{-2, 0});
         Collections.shuffle(directions);
@@ -47,25 +52,33 @@ public class GameTableModel extends AbstractTableModel {
             int newX = x + direction[0];
             int newY = y + direction[1];
 
-            if (isValid(newX, newY) && !visited[newX][newY]) {
-                board[x + direction[0] / 2][y + direction[1] / 2].setWall(false);
-                generateMazeDFS(newX, newY, visited);
+            if (isValid(newX, newY)) {
+                int midX = x + direction[0] / 2;
+                int midY = y + direction[1] / 2;
+
+                if (midX >= 0 && midX < width && midY >= 0 && midY < height) {
+                    board[midY][midX].setWall(false);
+                }
+
+                if (!visited[newY][newX]) {
+                    generateMazeDFS(newX, newY, visited);
+                }
             }
         }
     }
 
     private boolean isValid(int x, int y) {
-        return x > 0 && y > 0 && x < size - 1 && y < size - 1;
+        return x > 0 && y > 0 && x < width - 1 && y < height - 1;
     }
 
     @Override
     public int getRowCount() {
-        return size;
+        return height;
     }
 
     @Override
     public int getColumnCount() {
-        return size;
+        return width;
     }
 
     @Override
