@@ -12,7 +12,6 @@ public class GameWindow extends JFrame {
     private GameTableModel tableModel;
     public GameWindow(int width, int height) {
         setTitle("Chase & Chew - Board Size: " + width + "x" + height);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         tableModel = new GameTableModel();

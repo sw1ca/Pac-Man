@@ -54,7 +54,6 @@ public class MenuController {
         Player player = new Player(gameWindow.getTableModel(), 1, 1);
         GameController gameController = new GameController(gameWindow, player);
         gameController.start();
-        view.setVisible(false);
     }
 
     private void showHighScores() {}
