@@ -49,11 +49,11 @@ public class MenuController {
         }
     }
     private void openGameWindow(int width, int height) {
-        GameWindow gameWindow = new GameWindow(width, height);
+        Player player = new Player(1, 1);
+        GameWindow gameWindow = new GameWindow(width, height, player);
         gameWindow.setVisible(true);
-        Player player = new Player(gameWindow.getTableModel(), 1, 1);
+
         GameController gameController = new GameController(gameWindow, player);
-        gameController.start();
     }
 
     private void showHighScores() {}

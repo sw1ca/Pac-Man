@@ -1,20 +1,40 @@
 package view;
 
 import model.GameCell;
+import model.Player;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.util.EnumMap;
+import java.util.Map;
 
 public class GameCellRenderer extends DefaultTableCellRenderer {
-    private final ImageIcon playerIcon;
+    private final Player player;
+    private final Map<Player.Direction, ImageIcon> openIcons = new EnumMap<>(Player.Direction.class);
+    private final Map<Player.Direction, ImageIcon> closedIcons = new EnumMap<>(Player.Direction.class);
 
-    public GameCellRenderer() {
-        playerIcon = new ImageIcon(getClass().getResource("/assets/rightOpen2.png"));
-        if(playerIcon.getImage() != null) {
-            Image scaled = playerIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-            playerIcon.setImage(scaled);
-        }
+
+    public GameCellRenderer(Player player) {
+        this.player = player;
+
+        openIcons.put(Player.Direction.RIGHT, loadIcon("/assets/rightOpen1.png"));
+        closedIcons.put(Player.Direction.RIGHT, loadIcon("/assets/rightOpen2.png"));
+
+        openIcons.put(Player.Direction.LEFT, loadIcon("/assets/leftOpen1.png"));
+        closedIcons.put(Player.Direction.LEFT, loadIcon("/assets/leftOpen2.png"));
+
+        openIcons.put(Player.Direction.UP, loadIcon("/assets/upOpen1.png"));
+        closedIcons.put(Player.Direction.UP, loadIcon("/assets/upOpen2.png"));
+
+        openIcons.put(Player.Direction.DOWN, loadIcon("/assets/downOpen1.png"));
+        closedIcons.put(Player.Direction.DOWN, loadIcon("/assets/downOpen2.png"));
+    }
+
+    private ImageIcon loadIcon(String path) {
+        ImageIcon icon = new ImageIcon(getClass().getResource(path));
+        Image scaled = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaled);
     }
 
     @Override
@@ -32,7 +52,17 @@ public class GameCellRenderer extends DefaultTableCellRenderer {
             cell.setText("");
         } else if (gameCell.hasPlayer()) {
             cell.setBackground(Color.BLACK);
-            cell.setIcon(playerIcon);
+
+            Player.Direction dir = player.getDirection();
+            boolean mouthOpen = player.isMouthOpen();
+
+            ImageIcon icon;
+            if (mouthOpen) {
+                icon = openIcons.getOrDefault(dir, openIcons.get(Player.Direction.RIGHT));
+            } else {
+                icon = closedIcons.getOrDefault(dir, closedIcons.get(Player.Direction.RIGHT));
+            }
+            cell.setIcon(icon);
         } else if (gameCell.hasGhost()) {
             cell.setBackground(Color.BLACK);
             cell.setForeground(Color.RED);

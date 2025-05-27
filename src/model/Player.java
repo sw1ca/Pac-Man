@@ -1,55 +1,40 @@
 package model;
 
-import javax.swing.*;
-
-public class Player extends JPanel implements Runnable {
+public class Player {
     private int x, y;
-    private int directionX, directionY;
-    private final Map model;
-    private boolean running = true;
-    public Player(Map model, int startX, int startY) {
-        this.model = model;
+    private boolean mouthOpen = false;
+
+    public Player(int startX, int startY) {
         this.x = startX;
         this.y = startY;
-        this.directionX = 0;
-        this.directionY = 0;
     }
-    public void setDirection(int directionX, int directionY) {
-        this.directionX = directionX;
-        this.directionY = directionY;
+    public enum Direction {
+        UP, DOWN, LEFT, RIGHT, NONE
     }
+    private Direction direction = Direction.NONE;
+    public Direction getDirection() {
+        return direction;
+    }
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
     public int getX() {
         return x;
     }
+
     public int getY() {
         return y;
     }
-    private void move() {
-        int newX = x + directionX;
-        int newY = y + directionY;
 
-        if(newX >= 0 && newX < model.getColumnCount() && newY >= 0 && newY < model.getRowCount()) {
-            if(!model.getCell(newY, newX).isWall()) {
-                model.getCell(y, x).setPlayer(false);
-                x = newX;
-                y = newY;
-                model.getCell(y, x).setPlayer(true);
-                model.fireTableDataChanged();
-            }
-        }
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
-    @Override
-    public void run() {
-        while(running) {
-            move();
-            try {
-                Thread.sleep(200); // Adjust speed as needed
-            } catch (InterruptedException e) {
-                running = false;
-            }
-        }
+    public boolean isMouthOpen() {
+        return mouthOpen;
     }
-    public void stop() {
-        running = false;
+    public void toggleMouth() {
+        mouthOpen = !mouthOpen;
     }
 }
