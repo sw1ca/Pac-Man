@@ -1,5 +1,6 @@
 package controller;
 
+import model.Player;
 import view.GameWindow;
 import view.MenuWindow;
 
@@ -50,6 +51,10 @@ public class MenuController {
     private void openGameWindow(int width, int height) {
         GameWindow gameWindow = new GameWindow(width, height);
         gameWindow.setVisible(true);
+        Player player = new Player(gameWindow.getTableModel(), 1, 1);
+        GameController gameController = new GameController(gameWindow, player);
+        gameController.start();
+        view.setVisible(false);
     }
 
     private void showHighScores() {}

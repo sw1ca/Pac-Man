@@ -12,6 +12,7 @@ public class GameWindow extends JFrame {
     private GameTableModel tableModel;
     public GameWindow(int width, int height) {
         setTitle("Chase & Chew - Board Size: " + width + "x" + height);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         tableModel = new GameTableModel();
@@ -36,6 +37,8 @@ public class GameWindow extends JFrame {
         table.setTableHeader(null);
         add(scrollPane, BorderLayout.CENTER);
         pack();
+        table.setFocusable(true);
+        table.requestFocusInWindow();
         setVisible(true);
     }
 
