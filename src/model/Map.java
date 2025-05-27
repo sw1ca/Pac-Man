@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class GameTableModel extends AbstractTableModel {
+public class Map extends AbstractTableModel {
     private GameCell[][] board;
     private int width;
     private int height;
