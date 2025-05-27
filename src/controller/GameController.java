@@ -1,6 +1,6 @@
 package controller;
 
-import model.GameTableModel;
+import model.Map;
 import model.Player;
 import view.GameWindow;
 
@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 public class GameController {
     private Player player;
     private final GameWindow window;
-    private final GameTableModel model;
+    private final Map model;
 
     private int playerRow = 1;
     private int playerColumn = 1;

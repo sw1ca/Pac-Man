@@ -5,9 +5,9 @@ import javax.swing.*;
 public class Player extends JPanel implements Runnable {
     private int x, y;
     private int directionX, directionY;
-    private final GameTableModel model;
+    private final Map model;
     private boolean running = true;
-    public Player(GameTableModel model, int startX, int startY) {
+    public Player(Map model, int startX, int startY) {
         this.model = model;
         this.x = startX;
         this.y = startY;

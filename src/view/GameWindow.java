@@ -1,7 +1,6 @@
 package view;
 
-import model.GameCell;
-import model.GameTableModel;
+import model.Map;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
@@ -9,12 +8,12 @@ import java.awt.*;
 
 public class GameWindow extends JFrame {
     private JTable table;
-    private GameTableModel tableModel;
+    private Map tableModel;
     public GameWindow(int width, int height) {
         setTitle("Chase & Chew - Board Size: " + width + "x" + height);
         setLocationRelativeTo(null);
 
-        tableModel = new GameTableModel();
+        tableModel = new Map();
         tableModel.generateMaze(width, height);
 
         table = new JTable(tableModel);
@@ -54,7 +53,7 @@ public class GameWindow extends JFrame {
     public JTable getTable() {
         return table;
     }
-    public GameTableModel getTableModel() {
+    public Map getTableModel() {
         return tableModel;
     }
 }
