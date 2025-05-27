@@ -3,7 +3,7 @@ package model;
 public class GameCell {
     private boolean isWall;
     private boolean hasDot;
-    private boolean hasPlayer;
+    private boolean hasPlayer = false;
     private boolean hasGhost;
     private PowerUp powerUp;
 

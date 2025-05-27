@@ -7,6 +7,16 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 public class GameCellRenderer extends DefaultTableCellRenderer {
+    private final ImageIcon playerIcon;
+
+    public GameCellRenderer() {
+        playerIcon = new ImageIcon(getClass().getResource("/assets/rightOpen2.png"));
+        if(playerIcon.getImage() != null) {
+            Image scaled = playerIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+            playerIcon.setImage(scaled);
+        }
+    }
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel cell = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
@@ -14,13 +24,15 @@ public class GameCellRenderer extends DefaultTableCellRenderer {
         cell.setOpaque(true);
         GameCell gameCell = (GameCell) value;
 
+        cell.setIcon(null);
+        cell.setText("");
+
         if (gameCell.isWall()) {
             cell.setBackground(Color.BLUE.darker());
             cell.setText("");
         } else if (gameCell.hasPlayer()) {
             cell.setBackground(Color.BLACK);
-            cell.setForeground(Color.YELLOW);
-            cell.setText("P");
+            cell.setIcon(playerIcon);
         } else if (gameCell.hasGhost()) {
             cell.setBackground(Color.BLACK);
             cell.setForeground(Color.RED);
