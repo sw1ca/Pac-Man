@@ -33,21 +33,20 @@ public class MenuWindow extends JFrame {
         highScoresButton = new JButton("High Scores");
         highScoresButton.setBounds(150, 300, 500, 50);
         highScoresButton.addActionListener(e -> {
-            JTextArea scoresArea = new JTextArea(15, 30);
-            scoresArea.setEditable(false);
+            java.util.List<PlayerScore> scores = HighScores.getHighScores();
 
-            StringBuilder sb = new StringBuilder();
-            for (PlayerScore entry : HighScores.getHighScores()) {
-                sb.append(entry.getName()).append(" - ").append(entry.getScore()).append("\n");
+            DefaultListModel<String> model = new DefaultListModel<>();
+            for (PlayerScore entry : scores) {
+                model.addElement(entry.getName() + " - " + entry.getScore());
             }
-            if (sb.length() == 0) sb.append("No high scores yet.");
-            scoresArea.setText(sb.toString());
 
-            JScrollPane scrollPane = new JScrollPane(scoresArea);
+            JList<String> list = new JList<>(model);
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            JScrollPane scrollPane = new JScrollPane(list);
+            scrollPane.setPreferredSize(new Dimension(300, 200));
 
             Object[] options = {"Clear Scores", "Close"};
-
-            int choice = JOptionPane.showOptionDialog(
+            int result = JOptionPane.showOptionDialog(
                     null,
                     scrollPane,
                     "High Scores",
@@ -58,16 +57,13 @@ public class MenuWindow extends JFrame {
                     options[1]
             );
 
-            if (choice == JOptionPane.YES_OPTION) {
-                int confirm = JOptionPane.showConfirmDialog(
-                        null,
-                        "Are you sure you want to clear all scores?",
-                        "Confirm Clear",
-                        JOptionPane.YES_NO_OPTION
-                );
+            if (result == JOptionPane.YES_OPTION) {
+                int confirm = JOptionPane.showConfirmDialog(null,
+                        "Are you sure you want to clear all high scores?",
+                        "Confirm", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     HighScores.clearHighScores();
-                    JOptionPane.showMessageDialog(null, "Scores cleared.");
+                    JOptionPane.showMessageDialog(null, "High scores have been cleared.");
                 }
             }
         });
