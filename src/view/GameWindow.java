@@ -11,6 +11,7 @@ public class GameWindow extends JFrame {
     private JTable table;
     private Map tableModel;
     private final Player player;
+    private JLabel scoreLabel;
     public GameWindow(int width, int height, Player player) {
         this.player = player;
         setTitle("Chase & Chew - Board Size: " + width + "x" + height);
@@ -18,6 +19,14 @@ public class GameWindow extends JFrame {
 
         tableModel = new Map();
         tableModel.generateMaze(width, height);
+
+        scoreLabel = new JLabel("Score: 0");
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        scoreLabel.setForeground(Color.WHITE);
+        scoreLabel.setBackground(Color.BLACK);
+        scoreLabel.setOpaque(true);
+        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(scoreLabel, BorderLayout.NORTH);
 
         table = new JTable(tableModel);
         table.setDefaultRenderer(Object.class, new GameCellRenderer(player));
@@ -41,6 +50,9 @@ public class GameWindow extends JFrame {
         table.setFocusable(true);
         table.requestFocusInWindow();
         setVisible(true);
+    }
+    public void updateScore(int score) {
+        scoreLabel.setText("Score: " + score);
     }
 
     private JScrollPane getScrollPane(int width, int height, int cellSize) {

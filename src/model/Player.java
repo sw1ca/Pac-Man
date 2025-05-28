@@ -3,6 +3,7 @@ package model;
 public class Player {
     private int x, y;
     private boolean mouthOpen = false;
+    private int score = 0;
 
     public Player(int startX, int startY) {
         this.x = startX;
@@ -36,5 +37,11 @@ public class Player {
     }
     public void toggleMouth() {
         mouthOpen = !mouthOpen;
+    }
+    public void addScore(int points) {
+        score += points;
+    }
+    public int getScore() {
+        return score;
     }
 }

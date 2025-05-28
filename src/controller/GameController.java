@@ -1,9 +1,12 @@
 package controller;
 
+import model.GameCell;
+import model.HighScores;
 import model.Map;
 import model.Player;
 import view.GameWindow;
 
+import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -76,8 +79,31 @@ public class GameController {
 
                     if (canMoveTo(newY, newX)) {
                         model.getCell(player.getY(), player.getX()).setPlayer(false);
-                        model.getCell(newY, newX).setPlayer(true);
+
+                        GameCell newCell = model.getCell(newY, newX);
+                        newCell.setPlayer(true);
+
+                        if (newCell.hasDot()) {
+                            newCell.setDot(false);
+                            player.addScore(20);
+                            window.updateScore(player.getScore());
+
+                            if (allDotsCollected()) {
+                                moving = false;
+
+                                SwingUtilities.invokeLater(() -> {
+                                    String name = JOptionPane.showInputDialog(window, "Bravo! Enter your nickname: ");
+                                    if (name != null && !name.trim().isEmpty()) {
+                                        HighScores.addScore(name.trim(), player.getScore());
+                                        JOptionPane.showMessageDialog(window, "Score saved!");
+                                    }
+                                    window.dispose();
+                                });
+                            }
+                        }
+
                         player.setPosition(newX, newY);
+
                         model.fireTableDataChanged();
                     }
 
@@ -111,5 +137,15 @@ public class GameController {
                 }
             }
         }).start();
+    }
+    private boolean allDotsCollected() {
+        for (int row = 0; row < model.getRowCount(); row++) {
+            for (int col = 0; col < model.getColumnCount(); col++) {
+                if (model.getCell(row, col).hasDot()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

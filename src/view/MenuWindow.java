@@ -1,5 +1,8 @@
 package view;
 
+import model.PlayerScore;
+import model.HighScores;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -29,6 +32,45 @@ public class MenuWindow extends JFrame {
 
         highScoresButton = new JButton("High Scores");
         highScoresButton.setBounds(150, 300, 500, 50);
+        highScoresButton.addActionListener(e -> {
+            JTextArea scoresArea = new JTextArea(15, 30);
+            scoresArea.setEditable(false);
+
+            StringBuilder sb = new StringBuilder();
+            for (PlayerScore entry : HighScores.getHighScores()) {
+                sb.append(entry.getName()).append(" - ").append(entry.getScore()).append("\n");
+            }
+            if (sb.length() == 0) sb.append("No high scores yet.");
+            scoresArea.setText(sb.toString());
+
+            JScrollPane scrollPane = new JScrollPane(scoresArea);
+
+            Object[] options = {"Clear Scores", "Close"};
+
+            int choice = JOptionPane.showOptionDialog(
+                    null,
+                    scrollPane,
+                    "High Scores",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    null,
+                    options,
+                    options[1]
+            );
+
+            if (choice == JOptionPane.YES_OPTION) {
+                int confirm = JOptionPane.showConfirmDialog(
+                        null,
+                        "Are you sure you want to clear all scores?",
+                        "Confirm Clear",
+                        JOptionPane.YES_NO_OPTION
+                );
+                if (confirm == JOptionPane.YES_OPTION) {
+                    HighScores.clearHighScores();
+                    JOptionPane.showMessageDialog(null, "Scores cleared.");
+                }
+            }
+        });
 
         exitButton = new JButton("Exit");
         exitButton.setBounds(150, 400, 500, 50);
