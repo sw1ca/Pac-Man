@@ -1,12 +1,13 @@
 package model;
 
+import javax.swing.filechooser.FileSystemView;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class HighScores {
-    private static final String FILE_NAME = "highscores.ser";
+    private static final String FILE_NAME = new File(FileSystemView.getFileSystemView().getHomeDirectory(), "highscores.ser").getAbsolutePath();
     private static List<PlayerScore> highScores = new ArrayList<>();
 
     static {
