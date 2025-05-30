@@ -62,10 +62,6 @@ public class GameController {
         moving = false;
     }
 
-    private boolean isDirectionKey(int keyCode) {
-        return keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_RIGHT
-                || keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN;
-    }
     private boolean scoreSaved = false;
     public void addScore() {
         if(scoreSaved) return; // Prevent multiple score prompts
