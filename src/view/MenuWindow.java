@@ -34,12 +34,10 @@ public class MenuWindow extends JFrame {
         highScoresButton.setBounds(150, 300, 500, 50);
         highScoresButton.addActionListener(e -> {
             java.util.List<PlayerScore> scores = HighScores.getHighScores();
-
             DefaultListModel<String> model = new DefaultListModel<>();
             for (PlayerScore entry : scores) {
                 model.addElement(entry.getName() + " - " + entry.getScore());
             }
-
             JList<String> list = new JList<>(model);
             list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             JScrollPane scrollPane = new JScrollPane(list);

@@ -20,6 +20,7 @@ public class GameController {
 
     public GameController(GameWindow window, Player player) {
         this.window = window;
+        window.setGameController(this);
         this.player = player;
         this.model = window.getTableModel();
 
@@ -41,7 +42,6 @@ public class GameController {
 
         window.getTable().setFocusable(true);
         window.getTable().requestFocusInWindow();
-        startAnimationThread();
     }
 
     private void setDirection(int dx, int dy) {
@@ -58,13 +58,26 @@ public class GameController {
         }
     }
 
-    private void stopMoving() {
+    public void stopMoving() {
         moving = false;
     }
 
     private boolean isDirectionKey(int keyCode) {
         return keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_RIGHT
                 || keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN;
+    }
+    private boolean scoreSaved = false;
+    public void addScore() {
+        if(scoreSaved) return; // Prevent multiple score prompts
+        scoreSaved = true; // Mark that the score has been saved
+        SwingUtilities.invokeLater(() -> {
+            String name = JOptionPane.showInputDialog(window, "Bravo! Enter your nickname: ");
+            if (name != null && !name.trim().isEmpty()) {
+                HighScores.addScore(name.trim(), player.getScore());
+                JOptionPane.showMessageDialog(window, "Score saved!");
+            }
+            window.dispose();
+        });
     }
 
     private void startMovingThread() {
@@ -90,15 +103,7 @@ public class GameController {
 
                             if (allDotsCollected()) {
                                 moving = false;
-
-                                SwingUtilities.invokeLater(() -> {
-                                    String name = JOptionPane.showInputDialog(window, "Bravo! Enter your nickname: ");
-                                    if (name != null && !name.trim().isEmpty()) {
-                                        HighScores.addScore(name.trim(), player.getScore());
-                                        JOptionPane.showMessageDialog(window, "Score saved!");
-                                    }
-                                    window.dispose();
-                                });
+                                addScore();
                             }
                         }
 

@@ -1,21 +1,28 @@
 package view;
 
+import controller.GameController;
 import model.Map;
 import model.Player;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
 
 public class GameWindow extends JFrame {
     private JTable table;
     private Map tableModel;
     private final Player player;
     private JLabel scoreLabel;
+    private GameController gameController;
+
     public GameWindow(int width, int height, Player player) {
         this.player = player;
         setTitle("Chase & Chew - Board Size: " + width + "x" + height);
         setLocationRelativeTo(null);
+        setResizable(true);
+        setBackground(Color.BLACK);
+        getContentPane().setBackground(Color.BLACK);
 
         tableModel = new Map();
         tableModel.generateMaze(width, height);
@@ -35,6 +42,7 @@ public class GameWindow extends JFrame {
         table.setTableHeader(null);
         table.setRowSelectionAllowed(false);
         table.setCellSelectionEnabled(false);
+        table.setBackground(Color.BLACK);
 
         int cellSize = Math.max(5, Math.min(700 / width, 500 / height)) + 5;
         table.setRowHeight(cellSize);
@@ -44,12 +52,24 @@ public class GameWindow extends JFrame {
             column.setPreferredWidth(cellSize);
         }
         JScrollPane scrollPane = getScrollPane(width, height, cellSize);
+        scrollPane.setBackground(Color.BLACK);
+        scrollPane.getViewport().setBackground(Color.BLACK);
         table.setTableHeader(null);
         add(scrollPane, BorderLayout.CENTER);
+
         pack();
         table.setFocusable(true);
         table.requestFocusInWindow();
         setVisible(true);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                if (gameController != null) {
+                    gameController.stopMoving();
+                    gameController.addScore();
+                }
+            }
+        });
     }
     public void updateScore(int score) {
         scoreLabel.setText("Score: " + score);
@@ -70,6 +90,9 @@ public class GameWindow extends JFrame {
     }
     public Map getTableModel() {
         return tableModel;
+    }
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
     }
 }
 
