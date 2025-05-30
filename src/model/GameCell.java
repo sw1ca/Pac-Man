@@ -4,6 +4,7 @@ public class GameCell {
     private boolean isWall;
     private boolean hasDot;
     private boolean hasPlayer = false;
+    private Ghost ghost;
     private boolean hasGhost;
     private PowerUp powerUp;
 
@@ -25,11 +26,14 @@ public class GameCell {
     public void setPlayer(boolean player) {
         hasPlayer = player;
     }
-    public boolean hasGhost() {
-        return hasGhost;
+    public void setGhost(Ghost ghost) {
+        this.ghost = ghost;
     }
-    public void setGhost(boolean ghost) {
-        hasGhost = ghost;
+    public Ghost getGhost() {
+        return ghost;
+    }
+    public boolean hasGhost() {
+        return ghost != null;
     }
     public PowerUp getPowerUp() {
         return powerUp;

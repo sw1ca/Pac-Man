@@ -71,9 +71,9 @@ public class Ghost {
         List<int[]> directions = new java.util.ArrayList<>(List.of(new int[]{1, 0}, new int[]{-1, 0}, new int[]{0, 1}, new int[]{0, -1}));
         Collections.shuffle(directions, random);
 
-        for (int[] dir : directions) {
-            int newX = targetX + dir[0];
-            int newY = targetY + dir[1];
+        for (int[] direction : directions) {
+            int newX = targetX + direction[0];
+            int newY = targetY + direction[1];
 
             if (newY >= 0 && newY < map.getRowCount() &&
                     newX >= 0 && newX < map.getColumnCount() &&

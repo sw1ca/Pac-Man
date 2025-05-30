@@ -1,14 +1,13 @@
 package controller;
 
-import model.GameCell;
-import model.HighScores;
-import model.Map;
-import model.Player;
+import model.*;
 import view.GameWindow;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameController {
     private final Player player;
@@ -17,6 +16,7 @@ public class GameController {
     private int directionX = 0;
     private int directionY = 0;
     private boolean moving = false;
+    private List<Ghost> ghosts = new ArrayList<>();
 
     public GameController(GameWindow window, Player player) {
         this.window = window;
@@ -27,6 +27,27 @@ public class GameController {
         // Initialize player position in the model
         model.getCell(player.getY(), player.getX()).setPlayer(true);
         model.fireTableDataChanged();
+
+        ghosts.add(new Ghost(model, Ghost.ColorType.RED, Ghost.SpawnCorner.CENTER));
+        ghosts.add(new Ghost(model, Ghost.ColorType.BLUE, Ghost.SpawnCorner.TOP_RIGHT));
+        ghosts.add(new Ghost(model, Ghost.ColorType.PINK, Ghost.SpawnCorner.BOTTOM_LEFT));
+        ghosts.add(new Ghost(model, Ghost.ColorType.ORANGE, Ghost.SpawnCorner.BOTTOM_RIGHT));
+
+        // Ghosts movement
+        new Thread(() -> {
+            while (true) {
+                for (Ghost ghost : ghosts) {
+                    ghost.updatePosition();
+                }
+                model.fireTableDataChanged();
+
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        }).start();
 
         window.getTable().addKeyListener(new KeyAdapter() {
             @Override
@@ -44,13 +65,13 @@ public class GameController {
         window.getTable().requestFocusInWindow();
     }
 
-    private void setDirection(int dx, int dy) {
-        this.directionX = dx;
-        this.directionY = dy;
-        if (dx == -1 && dy == 0) player.setDirection(Player.Direction.LEFT);
-        else if (dx == 1 && dy == 0) player.setDirection(Player.Direction.RIGHT);
-        else if (dx == 0 && dy == -1) player.setDirection(Player.Direction.UP);
-        else if (dx == 0 && dy == 1) player.setDirection(Player.Direction.DOWN);
+    private void setDirection(int directionX, int directionY) {
+        this.directionX = directionX;
+        this.directionY = directionY;
+        if (directionX == -1 && directionY == 0) player.setDirection(Player.Direction.LEFT);
+        else if (directionX == 1 && directionY == 0) player.setDirection(Player.Direction.RIGHT);
+        else if (directionX == 0 && directionY == -1) player.setDirection(Player.Direction.UP);
+        else if (directionX == 0 && directionY == 1) player.setDirection(Player.Direction.DOWN);
 
         if (!moving) {
             moving = true;
@@ -120,10 +141,10 @@ public class GameController {
         }).start();
     }
 
-    private boolean canMoveTo(int row, int col) {
+    private boolean canMoveTo(int row, int column) {
         return row >= 0 && row < model.getRowCount()
-                && col >= 0 && col < model.getColumnCount()
-                && !model.getCell(row, col).isWall();
+                && column >= 0 && column < model.getColumnCount()
+                && !model.getCell(row, column).isWall();
     }
     private void startAnimationThread() {
         new Thread(() -> {
