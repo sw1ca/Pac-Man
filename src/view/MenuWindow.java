@@ -6,6 +6,7 @@ import model.HighScores;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 public class MenuWindow extends JFrame {
     private JButton newGameButton;
@@ -18,6 +19,17 @@ public class MenuWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
+
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+            if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
+                Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+                if (activeWindow != null) {
+                    activeWindow.dispose();
+                }
+                return true;
+            }
+            return false;
+        });
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
