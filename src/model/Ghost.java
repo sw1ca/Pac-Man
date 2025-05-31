@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -15,6 +16,8 @@ public class Ghost {
     private float positionY;
     private int targetX = 0;
     private int targetY = 0;
+    private int lastDirectionX = 0;
+    private int lastDirectionY = 0;
     private static final float MOVE_SPEED = 0.05f;
     private final Map map;
     private final Random random = new Random();
@@ -67,13 +70,38 @@ public class Ghost {
         } while (map.getCell(targetY, targetX).isWall() || map.getCell(targetY, targetX).hasGhost());
         map.getCell(targetY, targetX).setGhost(this);
     }
+    private int distanceInDirection(int x, int y, int directionX, int directionY) { // Counts steps in a given direction until hitting a wall or ghost
+        int steps = 0;
+        while(true) {
+            x += directionX;
+            y += directionY;
+            if(y < 0 || y >= map.getRowCount() || x < 0 || x >= map.getColumnCount()) break;
+            if(map.getCell(y, x).isWall() || map.getCell(y, x).hasGhost()) break;
+            steps++;
+        }
+        return steps;
+    }
     public void chooseNewTargetCell() {
-        List<int[]> directions = new java.util.ArrayList<>(List.of(new int[]{1, 0}, new int[]{-1, 0}, new int[]{0, 1}, new int[]{0, -1}));
-        Collections.shuffle(directions, random);
+        List<int[]> directions = new ArrayList<>(List.of(new int[]{1, 0}, new int[]{-1, 0}, new int[]{0, 1}, new int[]{0, -1}));
+        directions.removeIf(direction -> direction[0] == -lastDirectionX && direction[1] == -lastDirectionY); // Remove the opposite direction of the last move
+
+        if(directions.isEmpty()) {
+            directions = new ArrayList<>(List.of(new int[]{1, 0}, new int[]{-1, 0}, new int[]{0, 1}, new int[]{0, -1})); // If no directions left, allow all
+        }
+
+        int maxDistance = -1;
+        int[] bestDirection = null;
 
         for (int[] direction : directions) {
-            int newX = targetX + direction[0];
-            int newY = targetY + direction[1];
+            int distance = distanceInDirection(targetX, targetY, direction[0], direction[1]);
+            if (distance > maxDistance) {
+                maxDistance = distance;
+                bestDirection = direction;
+            }
+        }
+        if (bestDirection != null) {
+            int newX = targetX + bestDirection[0];
+            int newY = targetY + bestDirection[1];
 
             if (newY >= 0 && newY < map.getRowCount() &&
                     newX >= 0 && newX < map.getColumnCount() &&
@@ -83,9 +111,11 @@ public class Ghost {
                 map.getCell(targetY, targetX).setGhost(null);
                 targetX = newX;
                 targetY = newY;
-
                 map.getCell(targetY, targetX).setGhost(this);
-                return;
+
+                // Remember the last direction
+                lastDirectionX = bestDirection[0];
+                lastDirectionY = bestDirection[1];
             }
         }
     }
