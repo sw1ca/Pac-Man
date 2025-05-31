@@ -36,30 +36,32 @@ public class Ghost {
 
         int startX, endX, startY, endY;
         int cornerSize = 3; // Size of the corner area
+        if(cornerSize > width) cornerSize = width;
+        if(cornerSize > height) cornerSize = height;
 
         switch (corner) {
             case CENTER -> {
-                startX = width / 2 - cornerSize / 2;
-                endX = startX + cornerSize;
-                startY = height / 2 - cornerSize / 2;
-                endY = startY + cornerSize;
+                startX = Math.max(0, width / 2 - cornerSize / 2);
+                endX = Math.min(width, startX + cornerSize);
+                startY = Math.max(0, height / 2 - cornerSize / 2);
+                endY = Math.min(height, startY + cornerSize);
             }
             case TOP_RIGHT -> {
-                startX = width - cornerSize;
+                startX = Math.max(0, width - cornerSize);
                 endX = width;
                 startY = 0;
-                endY = cornerSize;
+                endY = Math.min(cornerSize, height);
             }
             case BOTTOM_LEFT -> {
                 startX = 0;
-                endX = cornerSize;
-                startY = height - cornerSize;
+                endX = Math.min(cornerSize, width);
+                startY = Math.max(0, height - cornerSize);
                 endY = height;
             }
             case BOTTOM_RIGHT -> {
-                startX = width - cornerSize;
+                startX = Math.max(0, width - cornerSize);
                 endX = width;
-                startY = height - cornerSize;
+                startY = Math.max(0, height - cornerSize);
                 endY = height;
             }
             default -> throw new IllegalArgumentException("Unknown corner: " + corner);
