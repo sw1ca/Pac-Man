@@ -1,5 +1,6 @@
 package view;
 
+import controller.GameController;
 import model.PlayerScore;
 import model.HighScores;
 
@@ -12,6 +13,7 @@ public class MenuWindow extends JFrame {
     private JButton newGameButton;
     private JButton highScoresButton;
     private JButton exitButton;
+    private GameController gameController;
 
     public MenuWindow() {
         setTitle("Chase & Chew");
@@ -23,10 +25,14 @@ public class MenuWindow extends JFrame {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
             if (e.getID() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
                 Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+                if(activeWindow instanceof GameWindow gameWindow) {
+                    gameWindow.closeGameWindow();
+                    return true;
+                }
                 if (activeWindow != null) {
                     activeWindow.dispose();
+                    return true;
                 }
-                return true;
             }
             return false;
         });

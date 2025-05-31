@@ -64,15 +64,19 @@ public class GameWindow extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
-                if (gameController != null) {
-                    gameController.stopMoving();
-                    gameController.addScore();
-                }
+                closeGameWindow();
             }
         });
     }
     public void updateScore(int score) {
         scoreLabel.setText("Score: " + score);
+    }
+    public void closeGameWindow() {
+        if(gameController != null) {
+            gameController.stopMoving();
+            gameController.addScore();
+        }
+        dispose();
     }
 
     private JScrollPane getScrollPane(int width, int height, int cellSize) {
