@@ -63,6 +63,7 @@ public class GameController {
 
         window.getTable().setFocusable(true);
         window.getTable().requestFocusInWindow();
+        startAnimationThread();
     }
 
     private void setDirection(int directionX, int directionY) {
