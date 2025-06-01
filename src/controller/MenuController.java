@@ -51,9 +51,10 @@ public class MenuController {
     private void openGameWindow(int width, int height) {
         Player player = new Player(1, 1);
         GameWindow gameWindow = new GameWindow(width, height, player);
+        GameController gameController = new GameController(gameWindow, player);
+        gameWindow.setGameController(gameController);
         gameWindow.setVisible(true);
 
-        GameController gameController = new GameController(gameWindow, player);
     }
 
     private void showHighScores() {}

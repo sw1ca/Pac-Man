@@ -50,7 +50,7 @@ public class GameWindow extends JFrame {
         scoreLabel.setForeground(Color.WHITE);
         scoreLabel.setBackground(Color.BLACK);
         scoreLabel.setOpaque(true);
-        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        scoreLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.BLACK);

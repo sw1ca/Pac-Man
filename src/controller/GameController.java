@@ -195,6 +195,7 @@ public class GameController {
                 if(player.getLives() <= 0) {
                     moving = false;
                     showGameOver();
+                    this.addScore();
                 } else {
                     resetPlayerPosition();
                 }
