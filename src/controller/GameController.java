@@ -126,6 +126,7 @@ public class GameController {
                         }
 
                         player.setPosition(newX, newY);
+                        checkColisionWithGhosts();
 
                         model.fireTableDataChanged();
                     }
@@ -170,5 +171,35 @@ public class GameController {
             }
         }
         return true;
+    }
+    private void showGameOver() {
+        SwingUtilities.invokeLater(() -> {
+            JOptionPane.showMessageDialog(window, "Game Over!");
+            window.dispose();
+        });
+    }
+    private void resetPlayerPosition() {
+        int startX = 1;
+        int startY = 1;
+        model.getCell(player.getY(), player.getX()).setPlayer(false);
+        player.setPosition(startX, startY);
+        model.getCell(startY, startX).setPlayer(true);
+        model.fireTableDataChanged();
+    }
+    private void checkColisionWithGhosts() {
+        for(Ghost ghost : ghosts) {
+            if(ghost.getX() == player.getX() && ghost.getY() == player.getY()) {
+                player.loseLife();
+                window.updateLives(player.getLives());
+
+                if(player.getLives() <= 0) {
+                    moving = false;
+                    showGameOver();
+                } else {
+                    resetPlayerPosition();
+                }
+                break;
+            }
+        }
     }
 }

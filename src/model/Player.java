@@ -1,9 +1,9 @@
 package model;
-
 public class Player {
     private int x, y;
     private boolean mouthOpen = false;
     private int score = 0;
+    private int lives = 3;
 
     public Player(int startX, int startY) {
         this.x = startX;
@@ -43,5 +43,11 @@ public class Player {
     }
     public int getScore() {
         return score;
+    }
+    public int getLives() {
+        return lives;
+    }
+    public void loseLife() {
+        lives--;
     }
 }

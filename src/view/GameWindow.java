@@ -8,6 +8,9 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class GameWindow extends JFrame {
     private JTable table;
@@ -15,6 +18,10 @@ public class GameWindow extends JFrame {
     private final Player player;
     private JLabel scoreLabel;
     private GameController gameController;
+    private JPanel lifePanel;
+    private List<JLabel> lifeLabels;
+    private ImageIcon heartIcon;
+    private final int MAX_LIVES = 3;
 
     public GameWindow(int width, int height, Player player) {
         this.player = player;
@@ -27,13 +34,30 @@ public class GameWindow extends JFrame {
         tableModel = new Map();
         tableModel.generateMaze(width, height);
 
+        ImageIcon originalIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/assets/heart.png")));
+        Image scaledImage = originalIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        heartIcon = new ImageIcon(scaledImage);
+        lifePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        lifePanel.setBackground(Color.BLACK);
+        lifeLabels = new ArrayList<>();
+        for (int i = 0; i < MAX_LIVES; i++) {
+            JLabel lifeLabel = new JLabel(heartIcon);
+            lifeLabels.add(lifeLabel);
+            lifePanel.add(lifeLabel);
+        }
         scoreLabel = new JLabel("Score: 0");
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
         scoreLabel.setForeground(Color.WHITE);
         scoreLabel.setBackground(Color.BLACK);
         scoreLabel.setOpaque(true);
         scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        add(scoreLabel, BorderLayout.NORTH);
+
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(Color.BLACK);
+        topPanel.add(lifePanel, BorderLayout.WEST);
+        topPanel.add(scoreLabel, BorderLayout.CENTER);
+
+        add(topPanel, BorderLayout.NORTH);
 
         table = new JTable(tableModel);
         table.setDefaultRenderer(Object.class, new GameCellRenderer(player));
@@ -87,6 +111,16 @@ public class GameWindow extends JFrame {
         int tableHeight = cellSize * height;
         scrollPane.setPreferredSize(new Dimension(tableWidth, tableHeight));
         return scrollPane;
+    }
+    public void updateLives(int lives) {
+        for (int i = 0; i < MAX_LIVES; i++) {
+            if (i < lives) {
+                lifeLabels.get(i).setVisible(true);
+            } else {
+                lifeLabels.get(i).setVisible(false);
+            }
+        }
+        lifePanel.repaint();
     }
 
     public JTable getTable() {
