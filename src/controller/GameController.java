@@ -15,8 +15,11 @@ public class GameController {
     private final Map model;
     private int directionX = 0;
     private int directionY = 0;
+    private int moveDelay = 120;
     private boolean moving = false;
     private List<Ghost> ghosts = new ArrayList<>();
+    private int timer = 0;
+    private boolean timerRunning = true;
 
     public GameController(GameWindow window, Player player) {
         this.window = window;
@@ -35,10 +38,19 @@ public class GameController {
 
         // Ghosts movement
         new Thread(() -> {
+            long lastPowerUpTime = System.currentTimeMillis();
             while (true) {
                 for (Ghost ghost : ghosts) {
                     ghost.updatePosition();
                 }
+                long now = System.currentTimeMillis();
+                if (now - lastPowerUpTime >= 5000) {
+                    lastPowerUpTime = now;
+                    if (Math.random() < 0.95) {
+                        spawnPowerUpAtGhostPreviousPosition();
+                    }
+                }
+
                 model.fireTableDataChanged();
 
                 try {
@@ -64,6 +76,7 @@ public class GameController {
         window.getTable().setFocusable(true);
         window.getTable().requestFocusInWindow();
         startAnimationThread();
+        startTimerThread();
     }
 
     private void setDirection(int directionX, int directionY) {
@@ -85,8 +98,9 @@ public class GameController {
     }
 
     private boolean scoreSaved = false;
+
     public void addScore() {
-        if(scoreSaved) return; // Prevent multiple score prompts
+        if (scoreSaved) return; // Prevent multiple score prompts
         scoreSaved = true; // Mark that the score has been saved
         SwingUtilities.invokeLater(() -> {
             String name = JOptionPane.showInputDialog(window, "Bravo! Enter your nickname: ");
@@ -104,7 +118,7 @@ public class GameController {
 
             while (moving) {
                 long currentTime = System.currentTimeMillis();
-                if (currentTime - lastMoveTime >= 120) {
+                if (currentTime - lastMoveTime >= moveDelay) {
                     int newX = player.getX() + directionX;
                     int newY = player.getY() + directionY;
 
@@ -122,6 +136,24 @@ public class GameController {
                             if (allDotsCollected()) {
                                 moving = false;
                                 addScore();
+                            }
+                        }
+                        if (newCell.hasPowerUp()) {
+                            PowerUp powerUp = newCell.getPowerUp();
+                            newCell.setPowerUp(null);
+
+                            switch (powerUp.getType()) {
+                                case SPEED_BOOST -> setSpeedBoost(5000);
+                                case SCORE_BOOST -> {
+                                    player.addScore(100);
+                                    window.updateScore(player.getScore());
+                                }
+                                case HP_BOOST -> {
+                                    player.addLife();
+                                    window.updateLives(player.getLives());
+                                }
+                                case GHOST_FREEZE -> freezeGhosts(5000);
+                                case GHOSTS_SLOW -> ghostsSlow(5000);
                             }
                         }
 
@@ -148,6 +180,7 @@ public class GameController {
                 && column >= 0 && column < model.getColumnCount()
                 && !model.getCell(row, column).isWall();
     }
+
     private void startAnimationThread() {
         new Thread(() -> {
             while (true) {
@@ -162,6 +195,21 @@ public class GameController {
             }
         }).start();
     }
+    private void startTimerThread() {
+        new Thread(() -> {
+            while (timerRunning) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    break;
+                }
+
+                timer++;
+                window.updateTime(timer);
+            }
+        }).start();
+    }
+
     private boolean allDotsCollected() {
         for (int row = 0; row < model.getRowCount(); row++) {
             for (int col = 0; col < model.getColumnCount(); col++) {
@@ -172,12 +220,15 @@ public class GameController {
         }
         return true;
     }
+
     private void showGameOver() {
         SwingUtilities.invokeLater(() -> {
             JOptionPane.showMessageDialog(window, "Game Over!");
             window.dispose();
+            timerRunning = false;
         });
     }
+
     private void resetPlayerPosition() {
         int startX = 1;
         int startY = 1;
@@ -186,13 +237,14 @@ public class GameController {
         model.getCell(startY, startX).setPlayer(true);
         model.fireTableDataChanged();
     }
+
     private void checkColisionWithGhosts() {
-        for(Ghost ghost : ghosts) {
-            if(ghost.getX() == player.getX() && ghost.getY() == player.getY()) {
+        for (Ghost ghost : ghosts) {
+            if (ghost.getX() == player.getX() && ghost.getY() == player.getY()) {
                 player.loseLife();
                 window.updateLives(player.getLives());
 
-                if(player.getLives() <= 0) {
+                if (player.getLives() <= 0) {
                     moving = false;
                     showGameOver();
                     this.addScore();
@@ -200,6 +252,63 @@ public class GameController {
                     resetPlayerPosition();
                 }
                 break;
+            }
+        }
+    }
+
+    public void setSpeedBoost(int durationMs) {
+        moveDelay = 60; // Speed up 2 times
+        new Thread(() -> {
+            try {
+                Thread.sleep(durationMs);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            moveDelay = 120; // Reset to normal speed
+        }).start();
+    }
+
+    public void freezeGhosts(int durationMs) {
+        List<Thread> freezeThreads = new ArrayList<>();
+        for (Ghost ghost : ghosts) {
+            Thread freezeThread = new Thread(() -> {
+                ghost.setFrozen(true);
+                try {
+                    Thread.sleep(durationMs);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    ghost.setFrozen(false);
+                }
+            });
+            freezeThreads.add(freezeThread);
+            freezeThread.start();
+        }
+    }
+
+    public void ghostsSlow(int durationMs) {
+        for (Ghost ghost : ghosts) {
+            ghost.setTemporarySpeed(0.025f, durationMs);
+        }
+    }
+
+    private void spawnPowerUpAtGhostPreviousPosition() {
+        for (Ghost ghost : ghosts) {
+            if (Math.random() < 0.25) {
+                int previousX = ghost.getPreviousTileX();
+                int previousY = ghost.getPreviousTileY();
+
+                if (previousX >= 0 && previousY >= 0 &&
+                        previousX < model.getColumnCount() && previousY < model.getRowCount()) {
+
+                    GameCell cell = model.getCell(previousY, previousX);
+                    if (cell.getPowerUp() == null && !cell.isWall() && !cell.hasPlayer() && !cell.hasGhost()) {
+                        PowerUp.PowerUpType[] types = PowerUp.PowerUpType.values();
+                        PowerUp.PowerUpType randomType = types[(int) (Math.random() * types.length)];
+                        PowerUp powerUp = new PowerUp(randomType);
+                        cell.setPowerUp(powerUp);
+                    }
+                }
             }
         }
     }

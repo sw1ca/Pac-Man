@@ -1,5 +1,7 @@
 package model;
 
+import java.awt.*;
+
 public class GameCell {
     private boolean isWall;
     private boolean hasDot;
@@ -34,6 +36,9 @@ public class GameCell {
     }
     public boolean hasGhost() {
         return ghost != null;
+    }
+    public boolean hasPowerUp() {
+        return powerUp != null;
     }
     public PowerUp getPowerUp() {
         return powerUp;

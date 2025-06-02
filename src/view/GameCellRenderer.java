@@ -3,6 +3,7 @@ package view;
 import model.GameCell;
 import model.Ghost;
 import model.Player;
+import model.PowerUp;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -16,6 +17,7 @@ public class GameCellRenderer extends DefaultTableCellRenderer {
     private final Map<Ghost.ColorType, ImageIcon> ghostImage = new HashMap<>();
     private final Map<Player.Direction, ImageIcon> openIcons = new EnumMap<>(Player.Direction.class);
     private final Map<Player.Direction, ImageIcon> closedIcons = new EnumMap<>(Player.Direction.class);
+    private final Map<PowerUp.PowerUpType, ImageIcon> powerUpIcons = new EnumMap<>(PowerUp.PowerUpType.class);
 
 
     public GameCellRenderer(Player player) {
@@ -37,6 +39,12 @@ public class GameCellRenderer extends DefaultTableCellRenderer {
 
         openIcons.put(Player.Direction.DOWN, loadIcon("/assets/downOpen1.png"));
         closedIcons.put(Player.Direction.DOWN, loadIcon("/assets/downOpen2.png"));
+
+        powerUpIcons.put(PowerUp.PowerUpType.SPEED_BOOST, loadIcon("/assets/greenApple.png"));
+        powerUpIcons.put(PowerUp.PowerUpType.SCORE_BOOST, loadIcon("/assets/cherry.png"));
+        powerUpIcons.put(PowerUp.PowerUpType.HP_BOOST, loadIcon("/assets/apple.png"));
+        powerUpIcons.put(PowerUp.PowerUpType.GHOST_FREEZE, loadIcon("/assets/orange.png"));
+        powerUpIcons.put(PowerUp.PowerUpType.GHOSTS_SLOW, loadIcon("/assets/strawberry.png"));
     }
 
     private ImageIcon loadIcon(String path) {
@@ -77,8 +85,14 @@ public class GameCellRenderer extends DefaultTableCellRenderer {
             cell.setIcon(new ImageIcon(icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         } else if (gameCell.getPowerUp() != null) {
             cell.setBackground(Color.BLACK);
-            cell.setForeground(Color.GREEN);
-            cell.setText("★");
+            PowerUp powerUp = gameCell.getPowerUp();
+            ImageIcon icon = powerUpIcons.get(powerUp.getType());
+            if (icon != null) {
+                cell.setIcon(icon);
+            } else {
+                cell.setText("★");
+                cell.setForeground(Color.GREEN);
+            }
         } else if (gameCell.hasDot()) {
             cell.setBackground(Color.BLACK);
             cell.setForeground(Color.WHITE);

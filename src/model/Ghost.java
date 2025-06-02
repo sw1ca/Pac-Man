@@ -13,13 +13,18 @@ public class Ghost {
     }
     private float positionX;
     private float positionY;
+    private int previousX, previousY;
     private int targetX = 0;
     private int targetY = 0;
     private int lastDirectionX = 0;
     private int lastDirectionY = 0;
-    private static final float MOVE_SPEED = 0.05f;
+    private int tileX, tileY;
+    private int previousTileX, previousTileY;
+    private static final float DEFAULT_SPEED = 0.05f;
+    private float moveSpeed = DEFAULT_SPEED;
+    private boolean frozen = false;
     private final Map map;
-    private final Random random = new Random();
+    private Random random = new Random();
     private final ColorType color;
 
     public Ghost(Map map, ColorType color, SpawnCorner corner) {
@@ -28,6 +33,8 @@ public class Ghost {
         spawnGhostInCorner(corner);
         this.positionX = targetX;
         this.positionY = targetY;
+        this.previousX = targetX;
+        this.previousY = targetY;
     }
     private void spawnGhostInCorner(SpawnCorner corner) {
         int width = map.getColumnCount();
@@ -105,9 +112,9 @@ public class Ghost {
             int newY = targetY + bestDirection[1];
 
             if (newY >= 0 && newY < map.getRowCount() &&
-                    newX >= 0 && newX < map.getColumnCount() &&
-                    !map.getCell(newY, newX).isWall() &&
-                    !map.getCell(newY, newX).hasGhost()) {
+                newX >= 0 && newX < map.getColumnCount() &&
+                !map.getCell(newY, newX).isWall() &&
+                !map.getCell(newY, newX).hasGhost()) {
 
                 map.getCell(targetY, targetX).setGhost(null);
                 targetX = newX;
@@ -120,18 +127,37 @@ public class Ghost {
             }
         }
     }
+    public void setTemporarySpeed(float speed, int durationMs) {
+        this.moveSpeed = speed;
+        new Thread(() -> {
+            try {
+                Thread.sleep(durationMs);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.moveSpeed = DEFAULT_SPEED;
+        }).start();
+    }
     public void updatePosition() {
+        if(frozen) return;
         float directionX = targetX - positionX;
         float directionY = targetY - positionY;
 
-        if (Math.abs(directionX) < MOVE_SPEED && Math.abs(directionY) < MOVE_SPEED) {
+        if (Math.abs(directionX) < moveSpeed && Math.abs(directionY) < moveSpeed) {
             positionX = targetX;
             positionY = targetY;
+
+            previousTileX = tileX;
+            previousTileY = tileY;
+
+            tileX = Math.round(positionX);
+            tileY = Math.round(positionY);
+
             chooseNewTargetCell();
         } else {
             float length = (float) Math.sqrt(directionX*directionX + directionY*directionY);
-            positionX += MOVE_SPEED * directionX / length;
-            positionY += MOVE_SPEED * directionY / length;
+            positionX += moveSpeed * directionX / length;
+            positionY += moveSpeed * directionY / length;
         }
     }
     public int getX() {
@@ -140,6 +166,30 @@ public class Ghost {
 
     public int getY() {
         return Math.round(positionY);
+    }
+
+    public int getPreviousX() {
+        return previousX;
+    }
+
+    public int getPreviousY() {
+        return previousY;
+    }
+
+    public int getPreviousTileX() {
+        return previousTileX;
+    }
+
+    public int getPreviousTileY() {
+        return previousTileY;
+    }
+
+    public boolean isFrozen() {
+        return frozen;
+    }
+
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
     }
 
     public float getPositionX() {

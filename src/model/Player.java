@@ -4,6 +4,7 @@ public class Player {
     private boolean mouthOpen = false;
     private int score = 0;
     private int lives = 3;
+    private static final int MAX_LIVES = 3;
 
     public Player(int startX, int startY) {
         this.x = startX;
@@ -49,5 +50,10 @@ public class Player {
     }
     public void loseLife() {
         lives--;
+    }
+    public void addLife() {
+        if(lives < MAX_LIVES) {
+            lives++;
+        }
     }
 }
