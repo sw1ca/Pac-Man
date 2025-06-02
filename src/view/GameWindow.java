@@ -22,6 +22,8 @@ public class GameWindow extends JFrame {
     private List<JLabel> lifeLabels;
     private ImageIcon heartIcon;
     private final int MAX_LIVES = 3;
+    private JLabel timeLabel;
+    private boolean timerRunning = true;
 
     public GameWindow(int width, int height, Player player) {
         this.player = player;
@@ -55,9 +57,14 @@ public class GameWindow extends JFrame {
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.BLACK);
         topPanel.add(lifePanel, BorderLayout.WEST);
-        topPanel.add(scoreLabel, BorderLayout.CENTER);
+        topPanel.add(scoreLabel, BorderLayout.EAST);
 
         add(topPanel, BorderLayout.NORTH);
+
+        timeLabel = new JLabel("Time: 0s");
+        timeLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        timeLabel.setForeground(Color.WHITE);
+        topPanel.add(timeLabel, BorderLayout.CENTER);
 
         table = new JTable(tableModel);
         table.setDefaultRenderer(Object.class, new GameCellRenderer(player));
@@ -121,6 +128,9 @@ public class GameWindow extends JFrame {
             }
         }
         lifePanel.repaint();
+    }
+    public void updateTime(int seconds) {
+        SwingUtilities.invokeLater(() -> timeLabel.setText("Time: " + seconds + "s"));
     }
 
     public JTable getTable() {
