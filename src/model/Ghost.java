@@ -160,11 +160,11 @@ public class Ghost {
             positionY += moveSpeed * directionY / length;
         }
     }
-    public int getX() {
+    public float getX() {
         return Math.round(positionX);
     }
 
-    public int getY() {
+    public float getY() {
         return Math.round(positionY);
     }
 
