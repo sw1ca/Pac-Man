@@ -60,12 +60,16 @@ public class GameCellRenderer extends DefaultTableCellRenderer {
         cell.setOpaque(true);
         GameCell gameCell = (GameCell) value;
 
+        // Clear previous settings
+        cell.setBackground(Color.BLACK);
+        cell.setForeground(Color.WHITE);
         cell.setIcon(null);
         cell.setText("");
 
-        if (gameCell.isWall()) {
-            cell.setBackground(Color.BLUE.darker());
-            cell.setText("");
+        if (gameCell.hasGhost()) {
+            Ghost ghost = gameCell.getGhost();
+            ImageIcon icon = ghostImage.get(ghost.getColor());
+            cell.setIcon(new ImageIcon(icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
         } else if (gameCell.hasPlayer()) {
             cell.setBackground(Color.BLACK);
 
@@ -79,10 +83,9 @@ public class GameCellRenderer extends DefaultTableCellRenderer {
                 icon = closedIcons.getOrDefault(dir, closedIcons.get(Player.Direction.RIGHT));
             }
             cell.setIcon(icon);
-        } else if (gameCell.hasGhost()) {
-            Ghost ghost = gameCell.getGhost();
-            ImageIcon icon = ghostImage.get(ghost.getColor());
-            cell.setIcon(new ImageIcon(icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH)));
+        } else if (gameCell.isWall()) {
+            cell.setBackground(Color.BLUE);
+            cell.setText("");
         } else if (gameCell.getPowerUp() != null) {
             cell.setBackground(Color.BLACK);
             PowerUp powerUp = gameCell.getPowerUp();
@@ -97,10 +100,7 @@ public class GameCellRenderer extends DefaultTableCellRenderer {
             cell.setBackground(Color.BLACK);
             cell.setForeground(Color.WHITE);
             cell.setText("•");
-        } else {
-            cell.setBackground(Color.BLACK);
-            cell.setText("");
-        }
+        } else {}
 
         return cell;
     }
