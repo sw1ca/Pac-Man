@@ -145,7 +145,7 @@ public class GameController {
                             switch (powerUp.getType()) {
                                 case SPEED_BOOST -> setSpeedBoost(5000);
                                 case SCORE_BOOST -> {
-                                    player.addScore(100);
+                                    player.addScore(1000);
                                     window.updateScore(player.getScore());
                                 }
                                 case HP_BOOST -> {
