@@ -34,7 +34,6 @@ public class GameController {
         initializeGhosts();
         initializeKeyListeners();
         initializeGameThreads();
-
     }
     private void initializeGhosts() {
         ghosts.add(new Ghost(model, Ghost.ColorType.RED, Ghost.SpawnCorner.CENTER));
