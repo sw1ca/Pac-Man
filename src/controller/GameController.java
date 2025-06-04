@@ -31,12 +31,39 @@ public class GameController {
         model.getCell(player.getY(), player.getX()).setPlayer(true);
         model.fireTableDataChanged();
 
+        initializeGhosts();
+        initializeKeyListeners();
+        initializeGameThreads();
+
+    }
+    private void initializeGhosts() {
         ghosts.add(new Ghost(model, Ghost.ColorType.RED, Ghost.SpawnCorner.CENTER));
         ghosts.add(new Ghost(model, Ghost.ColorType.BLUE, Ghost.SpawnCorner.TOP_RIGHT));
         ghosts.add(new Ghost(model, Ghost.ColorType.PINK, Ghost.SpawnCorner.BOTTOM_LEFT));
         ghosts.add(new Ghost(model, Ghost.ColorType.ORANGE, Ghost.SpawnCorner.BOTTOM_RIGHT));
-
-        // Ghosts movement
+    }
+    private void initializeKeyListeners() {
+        window.getTable().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT -> setDirection(-1, 0);
+                    case KeyEvent.VK_RIGHT -> setDirection(1, 0);
+                    case KeyEvent.VK_UP -> setDirection(0, -1);
+                    case KeyEvent.VK_DOWN -> setDirection(0, 1);
+                }
+            }
+        });
+        window.getTable().setFocusable(true);
+        window.getTable().requestFocusInWindow();
+    }
+    private void initializeGameThreads() {
+        startGhostThread();
+        startAnimationThread();
+        startTimerThread();
+        startCollisionCheckThread();
+    }
+    private void startGhostThread() {
         new Thread(() -> {
             long lastPowerUpTime = System.currentTimeMillis();
             while (true) {
@@ -60,23 +87,18 @@ public class GameController {
                 }
             }
         }).start();
-
-        window.getTable().addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_LEFT -> setDirection(-1, 0);
-                    case KeyEvent.VK_RIGHT -> setDirection(1, 0);
-                    case KeyEvent.VK_UP -> setDirection(0, -1);
-                    case KeyEvent.VK_DOWN -> setDirection(0, 1);
+    }
+    private void startCollisionCheckThread() {
+        new Thread(() -> {
+            while(true) {
+                checkColisionWithGhosts();
+                try {
+                    Thread.sleep(50); // Check collisions every 50 ms
+                } catch (InterruptedException e) {
+                    break;
                 }
             }
-        });
-
-        window.getTable().setFocusable(true);
-        window.getTable().requestFocusInWindow();
-        startAnimationThread();
-        startTimerThread();
+        }).start();
     }
 
     private void setDirection(int directionX, int directionY) {
