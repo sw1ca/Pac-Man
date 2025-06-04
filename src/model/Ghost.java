@@ -84,7 +84,7 @@ public class Ghost {
             x += directionX;
             y += directionY;
             if(y < 0 || y >= map.getRowCount() || x < 0 || x >= map.getColumnCount()) break;
-            if(map.getCell(y, x).isWall() || map.getCell(y, x).hasGhost()) break;
+            if(map.getCell(y, x).isWall()) break;
             steps++;
         }
         return steps;
@@ -113,8 +113,7 @@ public class Ghost {
 
             if (newY >= 0 && newY < map.getRowCount() &&
                 newX >= 0 && newX < map.getColumnCount() &&
-                !map.getCell(newY, newX).isWall() &&
-                !map.getCell(newY, newX).hasGhost()) {
+                !map.getCell(newY, newX).isWall()) {
 
                 map.getCell(targetY, targetX).setGhost(null);
                 targetX = newX;
