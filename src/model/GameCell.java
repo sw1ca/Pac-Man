@@ -1,13 +1,9 @@
 package model;
-
-import java.awt.*;
-
 public class GameCell {
     private boolean isWall;
     private boolean hasDot;
     private boolean hasPlayer = false;
     private Ghost ghost;
-    private boolean hasGhost;
     private PowerUp powerUp;
 
     public boolean isWall() {

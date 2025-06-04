@@ -27,7 +27,4 @@ public class PowerUp {
     public PowerUpType getType() {
         return type;
     }
-    public Image getIcon() {
-        return icon;
-    }
 }

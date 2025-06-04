@@ -46,7 +46,7 @@ public class GameController {
                 long now = System.currentTimeMillis();
                 if (now - lastPowerUpTime >= 5000) {
                     lastPowerUpTime = now;
-                    if (Math.random() < 0.95) {
+                    if (Math.random() < 0.25) {
                         spawnPowerUpAtGhostPreviousPosition();
                     }
                 }

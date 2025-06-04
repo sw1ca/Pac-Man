@@ -75,26 +75,18 @@ public class Map extends AbstractTableModel {
     private boolean isValid(int x, int y) {
         return x > 0 && y > 0 && x < width - 1 && y < height - 1;
     }
-
     @Override
     public int getRowCount() {
         return height;
     }
-
     @Override
     public int getColumnCount() {
         return width;
     }
-
     @Override
     public Object getValueAt(int row, int col) {
         return board[row][col];
     }
-
-    public GameCell[][] getBoard() {
-        return board;
-    }
-
     public GameCell getCell(int row, int col) {
         return board[row][col];
     }

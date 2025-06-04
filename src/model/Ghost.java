@@ -163,43 +163,18 @@ public class Ghost {
     public float getX() {
         return Math.round(positionX);
     }
-
     public float getY() {
         return Math.round(positionY);
     }
-
-    public int getPreviousX() {
-        return previousX;
-    }
-
-    public int getPreviousY() {
-        return previousY;
-    }
-
     public int getPreviousTileX() {
         return previousTileX;
     }
-
     public int getPreviousTileY() {
         return previousTileY;
     }
-
-    public boolean isFrozen() {
-        return frozen;
-    }
-
     public void setFrozen(boolean frozen) {
         this.frozen = frozen;
     }
-
-    public float getPositionX() {
-        return positionX;
-    }
-
-    public float getPositionY() {
-        return positionY;
-    }
-
     public ColorType getColor() {
         return color;
     }
