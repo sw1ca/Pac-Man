@@ -78,52 +78,49 @@ public class Ghost {
         } while (map.getCell(targetY, targetX).isWall() || map.getCell(targetY, targetX).hasGhost());
         map.getCell(targetY, targetX).setGhost(this);
     }
-    private int distanceInDirection(int x, int y, int directionX, int directionY) { // Counts steps in a given direction until hitting a wall or ghost
-        int steps = 0;
-        while(true) {
-            x += directionX;
-            y += directionY;
-            if(y < 0 || y >= map.getRowCount() || x < 0 || x >= map.getColumnCount()) break;
-            if(map.getCell(y, x).isWall()) break;
-            steps++;
-        }
-        return steps;
-    }
     public void chooseNewTargetCell() {
         List<int[]> directions = new ArrayList<>(List.of(new int[]{1, 0}, new int[]{-1, 0}, new int[]{0, 1}, new int[]{0, -1}));
-        directions.removeIf(direction -> direction[0] == -lastDirectionX && direction[1] == -lastDirectionY); // Remove the opposite direction of the last move
 
-        if(directions.isEmpty()) {
-            directions = new ArrayList<>(List.of(new int[]{1, 0}, new int[]{-1, 0}, new int[]{0, 1}, new int[]{0, -1})); // If no directions left, allow all
-        }
-
-        int maxDistance = -1;
-        int[] bestDirection = null;
-
+        List<int[]> validDirections = new ArrayList<>();
         for (int[] direction : directions) {
-            int distance = distanceInDirection(targetX, targetY, direction[0], direction[1]);
-            if (distance > maxDistance) {
-                maxDistance = distance;
-                bestDirection = direction;
-            }
-        }
-        if (bestDirection != null) {
-            int newX = targetX + bestDirection[0];
-            int newY = targetY + bestDirection[1];
+            int newX = targetX + direction[0];
+            int newY = targetY + direction[1];
 
             if (newY >= 0 && newY < map.getRowCount() &&
-                newX >= 0 && newX < map.getColumnCount() &&
-                !map.getCell(newY, newX).isWall()) {
+                    newX >= 0 && newX < map.getColumnCount() &&
+                    !map.getCell(newY, newX).isWall()) {
 
-                map.getCell(targetY, targetX).setGhost(null);
-                targetX = newX;
-                targetY = newY;
-                map.getCell(targetY, targetX).setGhost(this);
-
-                // Remember the last direction
-                lastDirectionX = bestDirection[0];
-                lastDirectionY = bestDirection[1];
+                // Prefer directions that aren't backwards
+                if (direction[0] != -lastDirectionX || direction[1] != -lastDirectionY || random.nextFloat() > 0.8) {
+                    validDirections.add(direction);
+                }
             }
+        }
+
+        // If no valid directions except backwards, allow backwards movement
+        if (validDirections.isEmpty()) {
+            for (int[] direction : directions) {
+                int newX = targetX + direction[0];
+                int newY = targetY + direction[1];
+
+                if (newY >= 0 && newY < map.getRowCount() &&
+                        newX >= 0 && newX < map.getColumnCount() &&
+                        !map.getCell(newY, newX).isWall()) {
+                    validDirections.add(direction);
+                }
+            }
+        }
+
+        if (!validDirections.isEmpty()) {
+            int[] chosenDirection = validDirections.get(random.nextInt(validDirections.size()));
+
+            map.getCell(targetY, targetX).setGhost(null);
+            targetX += chosenDirection[0];
+            targetY += chosenDirection[1];
+            map.getCell(targetY, targetX).setGhost(this);
+
+            lastDirectionX = chosenDirection[0];
+            lastDirectionY = chosenDirection[1];
         }
     }
     public void setTemporarySpeed(float speed, int durationMs) {
