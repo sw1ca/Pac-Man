@@ -4,24 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Ghost {
+public class Ghost extends Entity {
     public enum ColorType {
         RED, BLUE, PINK, ORANGE
     }
     public enum SpawnCorner {
         CENTER, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
-    private float positionX;
-    private float positionY;
-    private int previousX, previousY;
     private int targetX = 0;
     private int targetY = 0;
     private int lastDirectionX = 0;
     private int lastDirectionY = 0;
-    private int tileX, tileY;
     private int previousTileX, previousTileY;
-    private static final float DEFAULT_SPEED = 0.05f;
-    private float moveSpeed = DEFAULT_SPEED;
     private boolean frozen = false;
     private final Map map;
     private Random random = new Random();
@@ -31,10 +25,10 @@ public class Ghost {
         this.map = map;
         this.color = color;
         spawnGhostInCorner(corner);
-        this.positionX = targetX;
-        this.positionY = targetY;
+        setPosition(targetX, targetY);
         this.previousX = targetX;
         this.previousY = targetY;
+        setMoveSpeed(DEFAULT_SPEED);
     }
     private void spawnGhostInCorner(SpawnCorner corner) {
         int width = map.getColumnCount();

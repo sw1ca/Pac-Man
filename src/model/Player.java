@@ -1,14 +1,12 @@
 package model;
-public class Player {
-    private int x, y;
+public class Player extends Entity {
     private boolean mouthOpen = false;
     private int score = 0;
     private int lives = 3;
     private static final int MAX_LIVES = 3;
 
     public Player(int startX, int startY) {
-        this.x = startX;
-        this.y = startY;
+        setPosition(startX, startY);
     }
     public enum Direction {
         UP, DOWN, LEFT, RIGHT, NONE
@@ -22,16 +20,13 @@ public class Player {
     }
 
     public int getX() {
-        return x;
+        return Math.round(getPositionX());
     }
-
     public int getY() {
-        return y;
+        return Math.round(getPositionY());
     }
-
     public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
+        super.setPosition(x, y);
     }
     public boolean isMouthOpen() {
         return mouthOpen;
