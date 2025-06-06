@@ -74,6 +74,7 @@ public class GameWindow extends JFrame {
         table.setRowSelectionAllowed(false);
         table.setCellSelectionEnabled(false);
         table.setBackground(Color.BLACK);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         int cellSize = Math.max(5, Math.min(700 / width, 500 / height)) + 5;
         table.setRowHeight(cellSize);
