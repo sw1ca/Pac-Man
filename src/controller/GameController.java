@@ -72,9 +72,7 @@ public class GameController {
                 long now = System.currentTimeMillis();
                 if (now - lastPowerUpTime >= 5000) {
                     lastPowerUpTime = now;
-                    if (Math.random() < 0.25) {
-                        spawnPowerUpAtGhostPreviousPosition();
-                    }
+                    spawnPowerUpAtGhostPreviousPosition();
                 }
 
                 model.fireTableDataChanged();
@@ -241,15 +239,6 @@ public class GameController {
         }
         return true;
     }
-
-    private void showGameOver() {
-        SwingUtilities.invokeLater(() -> {
-            JOptionPane.showMessageDialog(window, "Game Over!");
-            window.dispose();
-            timerRunning = false;
-        });
-    }
-
     private void resetPlayerPosition() {
         int startX = 1;
         int startY = 1;
@@ -267,7 +256,6 @@ public class GameController {
 
                 if (player.getLives() <= 0) {
                     moving = false;
-                    showGameOver();
                     this.addScore();
                 } else {
                     resetPlayerPosition();
