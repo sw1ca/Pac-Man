@@ -128,6 +128,7 @@ public class Ghost extends Entity {
             this.moveSpeed = DEFAULT_SPEED;
         }).start();
     }
+    @Override
     public void updatePosition() {
         if(frozen) return;
         float directionX = targetX - positionX;

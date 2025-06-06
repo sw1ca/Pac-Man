@@ -7,20 +7,20 @@ public abstract class Entity implements Movable {
     protected float moveSpeed;
     protected static final float DEFAULT_SPEED = 0.05f;
 
-    public void updatePosition() {}
+    public abstract void updatePosition();
     public void setPosition(float x, float y) {
         this.positionX = x;
         this.positionY = y;
         this.tileX = Math.round(x);
         this.tileY = Math.round(y);
     }
+    @Override
     public void setPosition(int x, int y) {
         setPosition((float) x, (float) y);
     }
     public float getPositionX() {
         return positionX;
     }
-
     public float getPositionY() {
         return positionY;
     }

@@ -1,5 +1,7 @@
 package model;
-public class Player extends Entity {
+public class Player {
+    private float positionX, positionY;
+    private int tileX, tileY;
     private boolean mouthOpen = false;
     private int score = 0;
     private int lives = 3;
@@ -25,8 +27,20 @@ public class Player extends Entity {
     public int getY() {
         return Math.round(getPositionY());
     }
+    public void setPosition(float x, float y) {
+        this.positionX = x;
+        this.positionY = y;
+        this.tileX = Math.round(x);
+        this.tileY = Math.round(y);
+    }
     public void setPosition(int x, int y) {
-        super.setPosition(x, y);
+        setPosition((float) x, (float) y);
+    }
+    public float getPositionX() {
+        return positionX;
+    }
+    public float getPositionY() {
+        return positionY;
     }
     public boolean isMouthOpen() {
         return mouthOpen;
