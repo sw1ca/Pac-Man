@@ -1,6 +1,6 @@
 package model;
 
-public abstract class Entity implements Movable {
+public abstract class Entity implements Movable, Positionable {
     protected float positionX, positionY;
     protected int tileX, tileY;
     protected int previousX, previousY;
@@ -8,6 +8,7 @@ public abstract class Entity implements Movable {
     protected static final float DEFAULT_SPEED = 0.05f;
 
     public abstract void updatePosition();
+    @Override
     public void setPosition(float x, float y) {
         this.positionX = x;
         this.positionY = y;

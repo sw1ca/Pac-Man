@@ -1,5 +1,5 @@
 package model;
-public class Player {
+public class Player implements Positionable {
     private float positionX, positionY;
     private int tileX, tileY;
     private boolean mouthOpen = false;
@@ -27,12 +27,14 @@ public class Player {
     public int getY() {
         return Math.round(getPositionY());
     }
+    @Override
     public void setPosition(float x, float y) {
         this.positionX = x;
         this.positionY = y;
         this.tileX = Math.round(x);
         this.tileY = Math.round(y);
     }
+    @Override
     public void setPosition(int x, int y) {
         setPosition((float) x, (float) y);
     }
