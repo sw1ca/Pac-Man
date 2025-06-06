@@ -13,7 +13,6 @@ public class MenuWindow extends JFrame {
     private JButton newGameButton;
     private JButton highScoresButton;
     private JButton exitButton;
-    private GameController gameController;
 
     public MenuWindow() {
         setTitle("Chase & Chew");
