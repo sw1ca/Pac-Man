@@ -11,10 +11,6 @@ Unlike typical game loops, this project utilizes Swing's JTable for grid-based r
 * **Power-Up System:** Includes Speed Boosts, Score Multipliers, HP restoration, and mechanics to Freeze/Slow ghosts.
 * **High Scores:** Using Java **Serialization** to save top scores locally.
 
-# ⚙️ Technical Highlights
-
-This project was created to practice advanced Java concepts:
-
 # 🧵 Multithreading & Concurrency
 The game runs multiple parallel threads to guarantee smooth performance without blocking the user's interface:
 * **Ghost AI Thread:** Updates enemy positions independently.
@@ -40,3 +36,4 @@ The code follows the **Model-View-Controller** pattern:
 
 ---
 *This project was created as part of the Computer Science curriculum at PJAIT (Polish-Japanese Academy of Information Technology).*
+
