@@ -6,7 +6,7 @@ Unlike typical game loops, this project utilizes Swing's JTable for grid-based r
 # 🚀 Key Features
 
 * **Algorithmic Map Generation:** Every game features a unique maze generated using a **Depth-First Search (DFS)** algorithm with random wall removal logic.
-* **Customizable Grid:** Players can define the board size (e.g., 20x20 or 50x50), and the engine scales the user's interface properly.
+* **Customizable Grid:** Players can define the board size (e.g., 20x20, 50x50 or even 38x23), and the engine scales the user's interface properly.
 * **MVC Architecture:** Strict separation between logic (`Model`), user's interface (`View`), and input handling (`Controller`).
 * **Power-Up System:** Includes Speed Boosts, Score Multipliers, HP restoration, and mechanics to Freeze/Slow ghosts.
 * **High Scores:** Using Java **Serialization** to save top scores locally.
@@ -36,4 +36,5 @@ The code follows the **Model-View-Controller** pattern:
 
 ---
 *This project was created as part of the Computer Science curriculum at PJAIT (Polish-Japanese Academy of Information Technology).*
+
 
