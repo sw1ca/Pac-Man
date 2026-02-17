@@ -1,5 +1,5 @@
 # 🍒 Chase & Chew - Arcade Java Game
-![pac-man](https://github.com/user-attachments/assets/72c8ccd9-5550-42f4-a3c9-4b32d7e31d6e)
+
 ![pac-man](https://github.com/user-attachments/assets/72c8ccd9-5550-42f4-a3c9-4b32d7e31d6e)
 
 My own clone of the classic Pac-Man game built entirely in Java Swing.
@@ -38,6 +38,7 @@ The code follows the **Model-View-Controller** pattern:
 
 ---
 *This project was created as part of the Computer Science curriculum at PJAIT (Polish-Japanese Academy of Information Technology).*
+
 
 
 
